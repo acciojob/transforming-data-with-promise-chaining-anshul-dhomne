@@ -1,15 +1,91 @@
-<!DOCTYPE html>
-
+<!doctype html>
 <html>
-  <head>
-    <link rel="stylesheet" href="styles.css" />
-  </head>
+<head>
+  <meta charset="utf-8"/>
+  <title>Promise Chain Transform</title>
+</head>
+<body>
+  <input type="number" id="ip" />
+  <button id="btn">Start</button>
+  <div id="output"></div>
 
-  <body>
-    <!-- do not change this code -->
-    <input type="number" id="ip" />
-    <button id="btn">Start</button>
-    <div id="output"></div>
-    <script type="text/javascript" src="./script.js"></script>
-  </body>
+  <script>
+    // Attach handlers only after DOM is ready
+    document.addEventListener('DOMContentLoaded', () => {
+      const btn = document.getElementById('btn');
+      const outputDiv = document.getElementById('output');
+
+      btn.addEventListener('click', () => {
+        // read input value at click time
+        const raw = document.getElementById('ip').value;
+        const inputValue = Number(raw);
+        outputDiv.textContent = ''; // empty on click (test checks empty)
+
+        // Promise 1: resolve after 2s with original number
+        function p1() {
+          return new Promise((resolve) => {
+            setTimeout(() => {
+              outputDiv.textContent = `Result: ${inputValue}`;
+              resolve(inputValue);
+            }, 2000); // 2s
+          });
+        }
+
+        // Promise 2: after 1s (relative), multiply by 2
+        function p2(n) {
+          return new Promise((resolve) => {
+            setTimeout(() => {
+              const r = n * 2;
+              outputDiv.textContent = `Result: ${r}`;
+              resolve(r);
+            }, 1000); // 1s
+          });
+        }
+
+        // Promise 3: after 1s, subtract 3
+        function p3(n) {
+          return new Promise((resolve) => {
+            setTimeout(() => {
+              const r = n - 3;
+              outputDiv.textContent = `Result: ${r}`;
+              resolve(r);
+            }, 1000); // 1s
+          });
+        }
+
+        // Promise 4: after 1s, divide by 2
+        function p4(n) {
+          return new Promise((resolve) => {
+            setTimeout(() => {
+              const r = n / 2;
+              outputDiv.textContent = `Result: ${r}`;
+              resolve(r);
+            }, 1000); // 1s
+          });
+        }
+
+        // Promise 5: after 1s, add 10 and show final
+        function p5(n) {
+          return new Promise((resolve) => {
+            setTimeout(() => {
+              const r = n + 10;
+              outputDiv.textContent = `Final Result: ${r}`;
+              resolve(r);
+            }, 1000); // 1s
+          });
+        }
+
+        // Chain promises
+        p1()
+          .then(p2)
+          .then(p3)
+          .then(p4)
+          .then(p5)
+          .catch(err => {
+            outputDiv.textContent = 'Error: ' + err;
+          });
+      });
+    });
+  </script>
+</body>
 </html>
